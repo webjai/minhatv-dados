@@ -46,6 +46,7 @@
 </style>
 </head>
 <body>
+<form autocomplete="off" onsubmit="return false" style="display:contents">
 <header>
   <h1>📺 Painel · <span id="nomeApp">Minha TV</span></h1>
   <button class="mini" onclick="abrirConfig()">⚙️ Conexão</button>
@@ -77,7 +78,7 @@
       <div class="card">
         <h3 style="margin:0 0 6px">Gerar novo teste</h3>
         <div class="grid2">
-          <div><label>Nome da pessoa</label><input id="nNome" placeholder="Ex.: João"></div>
+          <div><label>Apelido do cliente (opcional)</label><input id="nNome" type="text" name="mtv-cliente" autocomplete="off" autocorrect="off" spellcheck="false" inputmode="text" placeholder="Ex.: João"></div>
           <div><label>Duração</label>
             <select id="nDur">
               <option value="2h">2 horas</option><option value="4h" selected>4 horas</option><option value="24h">24 horas</option>
@@ -133,6 +134,7 @@
     </section>
   </div>
 </main>
+</form>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -223,7 +225,7 @@ function desenharUsuarios(){
       <div class="top"><span class="code">${esc(k)}</span><span class="pill ${cl}">${st}</span><span class="grow"></span>
         <button class="mini" onclick="copiarMsg('${esc(k)}')">📋 Mensagem</button></div>
       <div class="grid2">
-        <div><label>Nome</label><input value="${esc(u.nome)}" onchange="CONFIG.usuarios['${esc(k)}'].nome=this.value"></div>
+        <div><label>Apelido</label><input type="text" name="mtv-ap-${esc(k)}" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(u.nome)}" oninput="CONFIG.usuarios['${esc(k)}'].nome=this.value"></div>
         <div><label>Expira em (${esc(fmt(u.expira))})</label><input type="datetime-local" value="${paraInput(u.expira)}" onchange="CONFIG.usuarios['${esc(k)}'].expira=this.value?isoLocal(new Date(this.value)):'';desenharUsuarios()"></div>
       </div>
       <label>Lista</label><select onchange="CONFIG.usuarios['${esc(k)}'].lista=this.value">${opcoesLista(u.lista)}</select>
