@@ -9,6 +9,12 @@
       "expira": "",
       "lista": "https://raw.githubusercontent.com/webjai/minhatv-dados/main/dados/listas/teste1.json",
       "ativo": true
+    },
+    "SYJH42": {
+      "nome": "",
+      "expira": "",
+      "lista": "https://raw.githubusercontent.com/webjai/minhatv-dados/main/dados/listas/teste1.json",
+      "ativo": true
     }
   }
 }
