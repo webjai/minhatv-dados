@@ -5,8 +5,8 @@
   "contato": "5511999999999",
   "usuarios": {
     "JGTYP5": {
-      "nome": "",
-      "expira": "",
+      "nome": "Povo beberam",
+      "expira": "2027-02-28T23:23:00-03:00",
       "lista": "https://raw.githubusercontent.com/webjai/minhatv-dados/main/dados/listas/http-ppon-shop-get-php-username-44386856.json",
       "ativo": true
     }
