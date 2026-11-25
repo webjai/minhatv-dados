@@ -8,7 +8,7 @@
       "nome": "Cliente Exemplo",
       "expira": "2026-12-31T23:59:00-03:00",
       "lista": "https://raw.githubusercontent.com/webjai/minhatv-dados/main/dados/listas/teste1.json",
-      "ativo": true
+      "ativo": false
     }
   }
 }
