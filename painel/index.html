@@ -10,7 +10,7 @@
   body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
   header{position:sticky;top:0;z-index:5;background:#0b0b12ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
   header h1{font-size:18px;margin:0;flex:1}
-  main{max-width:980px;margin:0 auto;padding:16px}
+  main{max-width:980px;margin:0 auto;padding:16px 16px 110px}
   .tabs{display:flex;gap:8px;margin-bottom:14px}
   .tabs button{flex:1}
   button{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer}
@@ -39,7 +39,8 @@
   details>summary{cursor:pointer;list-style:none}
   details>summary::-webkit-details-marker{display:none}
   .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 10px}
-  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:10px 16px;border-radius:10px;display:none;z-index:9;max-width:90vw}
+  .barraSalvar{position:fixed;left:12px;right:12px;bottom:14px;z-index:8;display:none;align-items:center;justify-content:space-between;gap:10px;background:#1f1f2e;border:1px solid var(--pri);border-radius:14px;padding:10px 12px;box-shadow:0 8px 30px #000a}
+  .toast{bottom:84px !important;position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:10px 16px;border-radius:10px;display:none;z-index:9;max-width:90vw}
   .hide{display:none}
   .sep{height:1px;background:var(--line);margin:12px 0}
   @media(max-width:560px){.grid2{grid-template-columns:minmax(0,1fr)}}
@@ -135,6 +136,7 @@
   </div>
 </main>
 </form>
+<div id="barraSalvar" class="barraSalvar"><span>Você tem alterações não salvas</span><button class="pri" onclick="salvarConfig()">💾 Salvar</button></div>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -225,10 +227,12 @@ function desenharUsuarios(){
       <div class="top"><span class="code">${esc(k)}</span><span class="pill ${cl}">${st}</span><span class="grow"></span>
         <button class="mini" onclick="copiarMsg('${esc(k)}')">📋 Mensagem</button></div>
       <div class="grid2">
-        <div><label>Apelido</label><input type="text" name="mtv-ap-${esc(k)}" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(u.nome)}" oninput="CONFIG.usuarios['${esc(k)}'].nome=this.value"></div>
-        <div><label>Expira em (${esc(fmt(u.expira))})</label><input type="datetime-local" value="${paraInput(u.expira)}" onchange="CONFIG.usuarios['${esc(k)}'].expira=this.value?isoLocal(new Date(this.value)):'';desenharUsuarios()"></div>
+        <div><label>Apelido</label><input type="text" name="mtv-ap-${esc(k)}" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(u.nome)}" oninput="CONFIG.usuarios['${esc(k)}'].nome=this.value;marcarPendente()"></div>
+        <div><label>Expira em (${esc(fmt(u.expira))})</label><input type="datetime-local" value="${paraInput(u.expira)}" onchange="CONFIG.usuarios['${esc(k)}'].expira=this.value?isoLocal(new Date(this.value)):'';desenharUsuarios();marcarPendente()"></div>
       </div>
-      <label>Lista</label><select onchange="CONFIG.usuarios['${esc(k)}'].lista=this.value">${opcoesLista(u.lista)}</select>
+      <label>Lista</label><select onchange="trocarLista('${esc(k)}',this.value)">${opcoesLista(u.lista)}<option value="__outra">✏️ Outro link…</option></select>
+      <label>Link da lista (pode editar)</label>
+      <input type="url" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(u.lista)}" oninput="CONFIG.usuarios['${esc(k)}'].lista=this.value.trim();marcarPendente()">
       <div class="row" style="margin-top:8px">
         <button class="mini" onclick="estender('${esc(k)}','4h')">+4h</button>
         <button class="mini" onclick="estender('${esc(k)}','24h')">+1 dia</button>
@@ -238,15 +242,26 @@ function desenharUsuarios(){
       </div>
     </div>`}).join('') : '<p class="muted">Nenhum acesso ainda. Gere o primeiro teste acima.</p>';
 }
-function estender(k,d){ const u=CONFIG.usuarios[k]; u.expira=somar(u.expira,d); u.ativo=true; desenharUsuarios(); toast('Prazo estendido — toque em Salvar'); }
-function alternar(k){ const u=CONFIG.usuarios[k]; u.ativo = u.ativo===false; desenharUsuarios(); }
-function excluir(k){ if(confirm('Excluir o acesso '+k+'? O app da pessoa vai mostrar "acesso terminou".')){ delete CONFIG.usuarios[k]; desenharUsuarios(); } }
+function estender(k,d){ const u=CONFIG.usuarios[k]; u.expira=somar(u.expira,d); u.ativo=true; desenharUsuarios(); marcarPendente(); toast('Prazo estendido'); }
+function alternar(k){ const u=CONFIG.usuarios[k]; u.ativo = u.ativo===false; desenharUsuarios(); marcarPendente(); }
+function trocarLista(k,v){ if(v==='__outra'){ const n=prompt('Cole o novo link da lista (JSON ou M3U):', CONFIG.usuarios[k].lista||''); if(n&&n.trim()) CONFIG.usuarios[k].lista=n.trim(); } else CONFIG.usuarios[k].lista=v; desenharUsuarios(); marcarPendente(); }
+let PENDENTE=false; function marcarPendente(){ PENDENTE=true; $('barraSalvar').style.display='flex'; }
+function excluir(k){ if(confirm('Excluir o acesso '+k+'? O app da pessoa vai mostrar "acesso terminou".')){ delete CONFIG.usuarios[k]; desenharUsuarios(); marcarPendente(); } }
 function copiarMsg(k){ const u=CONFIG.usuarios[k]; const t=`Olá${u.nome?' '+u.nome:''}! Seu acesso ao ${CONFIG.app_nome||'app'} está liberado.\nCódigo: ${k}\nVálido até: ${fmt(u.expira)}`;
   (navigator.clipboard? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>toast('Mensagem copiada ✔')).catch(()=>prompt('Copie a mensagem:',t)); }
 async function salvarConfig(){
-  try{ CONFIG_SHA = await gravar(`${C.pasta}/config.json`, CONFIG, CONFIG_SHA, 'Atualiza acessos'); toast('Acessos salvos ✔'); }
-  catch(e){ toast('Erro ao salvar: '+e.message, 6000); if(String(e.message).includes('409')) toast('O arquivo mudou em outro lugar. Recarregue a página.',6000); }
+  try{
+    CONFIG_SHA = await gravar(`${C.pasta}/config.json`, CONFIG, CONFIG_SHA, 'Atualiza acessos');
+  }catch(e){
+    if(!/409|422|does not match/.test(String(e.message))){ toast('Erro ao salvar: '+e.message, 6000); return; }
+    try{ // o arquivo mudou em outro lugar: pega a versão nova e salva as suas alterações por cima
+      const atual = await gh(`${C.pasta}/config.json`); CONFIG_SHA = atual ? atual.sha : null;
+      CONFIG_SHA = await gravar(`${C.pasta}/config.json`, CONFIG, CONFIG_SHA, 'Atualiza acessos');
+    }catch(e2){ toast('Erro ao salvar: '+e2.message, 6000); return; }
+  }
+  PENDENTE=false; $('barraSalvar').style.display='none'; toast('Acessos salvos ✔ — o app atualiza em até ~5 min');
 }
+
 
 // ================== app ==================
 function preencherApp(){ $('aNome').value=CONFIG.app_nome||''; $('aMsg').value=CONFIG.mensagem||''; $('aContato').value=CONFIG.contato||''; $('aExp').value=CONFIG.mensagem_expirado||''; }
@@ -357,6 +372,7 @@ function importarM3U(){
 // remove campos internos antes de salvar
 const _gravar=gravar; gravar=async(path,obj,sha,msg)=>_gravar(path, JSON.parse(JSON.stringify(obj,(k,v)=>k==='_aberta'?undefined:v)), sha, msg);
 
+window.addEventListener('beforeunload',e=>{ if(PENDENTE){ e.preventDefault(); e.returnValue=''; } });
 iniciar();
 </script>
 </body>
