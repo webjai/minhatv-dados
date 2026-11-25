@@ -3,5 +3,12 @@
   "mensagem": "",
   "mensagem_expirado": "Seu teste acabou! Chame no WhatsApp para liberar mais tempo. Seu histórico continua salvo.",
   "contato": "5511999999999",
-  "usuarios": {}
+  "usuarios": {
+    "N3UA3U": {
+      "nome": "Vitinho Viola🎸",
+      "expira": "",
+      "lista": "http://ppon.shop/get.php?username=44386856&password=94776959&type=m3u_plus&output=ts",
+      "ativo": true
+    }
+  }
 }
