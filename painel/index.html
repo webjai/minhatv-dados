@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel · Minha TV</title>
+<style>
+  :root{--bg:#0b0b12;--card:#161622;--card2:#1f1f2e;--txt:#f2f2f7;--sub:#a4a4b8;--pri:#ff3d57;--ok:#2ecc71;--warn:#f1c40f;--bad:#e74c3c;--line:#2c2c3e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:5;background:#0b0b12ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
+  header h1{font-size:18px;margin:0;flex:1}
+  main{max-width:980px;margin:0 auto;padding:16px}
+  .tabs{display:flex;gap:8px;margin-bottom:14px}
+  .tabs button{flex:1}
+  button{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font:inherit;cursor:pointer}
+  button.pri{background:var(--pri);border-color:var(--pri);font-weight:700}
+  button.sel{background:var(--pri);border-color:var(--pri)}
+  button.mini{padding:6px 10px;font-size:13px}
+  button:disabled{opacity:.5}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .grow{flex:1;min-width:140px}
+  label{display:block;font-size:12px;color:var(--sub);margin:8px 0 4px}
+  input,select,textarea{width:100%;background:#0f0f18;color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit}
+  textarea{min-height:90px}
+  .muted{color:var(--sub);font-size:13px}
+  .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:700}
+  .pill.ok{background:#2ecc7133;color:var(--ok)} .pill.bad{background:#e74c3c33;color:var(--bad)} .pill.warn{background:#f1c40f33;color:var(--warn)}
+  .user{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+  select{max-width:100%;text-overflow:ellipsis}
+  .muted{overflow-wrap:anywhere}
+  .user .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .user .top button{white-space:nowrap}
+  .code{font-family:ui-monospace,monospace;font-size:17px;font-weight:800;letter-spacing:1px}
+  .item{background:var(--card2);border-radius:12px;padding:10px;margin:8px 0}
+  .item .head{display:flex;gap:8px;align-items:center}
+  .item img{width:42px;height:42px;object-fit:cover;border-radius:6px;background:#000}
+  details>summary{cursor:pointer;list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 10px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000;border:1px solid var(--line);padding:10px 16px;border-radius:10px;display:none;z-index:9;max-width:90vw}
+  .hide{display:none}
+  .sep{height:1px;background:var(--line);margin:12px 0}
+  @media(max-width:560px){.grid2{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📺 Painel · <span id="nomeApp">Minha TV</span></h1>
+  <button class="mini" onclick="abrirConfig()">⚙️ Conexão</button>
+</header>
+<main>
+  <!-- CONEXÃO -->
+  <div id="telaConexao" class="card hide">
+    <h3 style="margin-top:0">Conectar ao seu repositório do GitHub</h3>
+    <p class="muted">Os dados ficam só neste navegador. Use um token com permissão de <b>Contents: Read and write</b> apenas no repositório dos dados.</p>
+    <div class="grid2">
+      <div><label>Usuário do GitHub</label><input id="cOwner" placeholder="seu-usuario"></div>
+      <div><label>Repositório dos dados</label><input id="cRepo" placeholder="minhatv-dados"></div>
+      <div><label>Branch</label><input id="cBranch" value="main"></div>
+      <div><label>Pasta</label><input id="cPasta" value="dados"></div>
+    </div>
+    <label>Token (github_pat_...)</label><input id="cToken" type="password">
+    <div class="row" style="margin-top:12px"><button class="pri" onclick="salvarConexao()">Conectar</button></div>
+  </div>
+
+  <div id="app" class="hide">
+    <div class="tabs">
+      <button id="tabU" class="sel" onclick="aba('U')">👤 Acessos</button>
+      <button id="tabL" onclick="aba('L')">📋 Listas</button>
+      <button id="tabA" onclick="aba('A')">⚙️ App</button>
+    </div>
+
+    <!-- ACESSOS -->
+    <section id="secU">
+      <div class="card">
+        <h3 style="margin:0 0 6px">Gerar novo teste</h3>
+        <div class="grid2">
+          <div><label>Nome da pessoa</label><input id="nNome" placeholder="Ex.: João"></div>
+          <div><label>Duração</label>
+            <select id="nDur">
+              <option value="2h">2 horas</option><option value="4h" selected>4 horas</option><option value="24h">24 horas</option>
+              <option value="3d">3 dias</option><option value="7d">7 dias</option><option value="30d">30 dias</option><option value="0">Sem prazo</option>
+            </select></div>
+        </div>
+        <label>Lista</label><select id="nLista"></select>
+        <div class="row" style="margin-top:12px">
+          <button class="pri" onclick="gerarTeste()">➕ Gerar código</button>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <input id="busca" class="grow" placeholder="Procurar código ou nome" oninput="desenharUsuarios()">
+        <button class="pri" onclick="salvarConfig()">💾 Salvar acessos</button>
+      </div>
+      <p class="muted">Depois de salvar, o app de cada pessoa atualiza sozinho em até ~5 minutos (ou ao tocar em "Verificar de novo").</p>
+      <div id="listaUsuarios"></div>
+    </section>
+
+    <!-- LISTAS -->
+    <section id="secL" class="hide">
+      <div class="card">
+        <div class="row">
+          <select id="selLista" class="grow" onchange="abrirLista(this.value)"></select>
+          <button class="mini" onclick="novaLista()">➕ Nova</button>
+          <button class="mini" onclick="duplicarLista()">⧉ Duplicar</button>
+        </div>
+        <div id="editorLista" class="hide">
+          <label>Nome da lista</label><input id="lNome" oninput="L.nome=this.value">
+          <p class="muted" id="lInfo"></p>
+          <div class="tabs" style="margin-top:10px">
+            <button id="stC" class="sel" onclick="subaba('C')">Canais</button>
+            <button id="stF" onclick="subaba('F')">Filmes</button>
+            <button id="stS" onclick="subaba('S')">Séries</button>
+          </div>
+          <div id="subC"></div><div id="subF" class="hide"></div><div id="subS" class="hide"></div>
+          <div class="sep"></div>
+          <div class="row"><button class="pri" onclick="salvarLista()">💾 Salvar lista</button>
+            <span class="muted">Quem usa esta lista recebe a atualização automaticamente.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APP -->
+    <section id="secA" class="hide">
+      <div class="card">
+        <label>Nome do app (aparece no topo)</label><input id="aNome">
+        <label>Recado na tela inicial (opcional)</label><input id="aMsg" placeholder="Ex.: Novos filmes toda sexta!">
+        <label>WhatsApp para contato (com DDI e DDD, só números)</label><input id="aContato" placeholder="5511999999999">
+        <label>Mensagem quando o acesso acaba</label><textarea id="aExp"></textarea>
+        <div class="row" style="margin-top:12px"><button class="pri" onclick="salvarApp()">💾 Salvar</button></div>
+      </div>
+    </section>
+  </div>
+</main>
+<div id="toast" class="toast"></div>
+
+<script>
+// ================== estado ==================
+let C = JSON.parse(localStorage.getItem('mtv_conexao') || 'null');
+let CONFIG = null, CONFIG_SHA = null;
+let LISTAS = [];          // [{nome, path, sha}]
+let L = null, L_SHA = null, L_PATH = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t, ms=2600){ const e=$('toast'); e.textContent=t; e.style.display='block'; clearTimeout(e._t); e._t=setTimeout(()=>e.style.display='none',ms); }
+
+// ================== GitHub API ==================
+function b64enc(str){ const bytes=new TextEncoder().encode(str); let bin=''; for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); return btoa(bin); }
+function b64dec(b64){ const bin=atob(b64.replace(/\n/g,'')); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new TextDecoder().decode(u); }
+async function gh(path, opts={}){
+  const url=`https://api.github.com/repos/${C.owner}/${C.repo}/contents/${path}` + (opts.method ? '' : `?ref=${encodeURIComponent(C.branch)}&t=${Date.now()}`);
+  const r=await fetch(url,{...opts,headers:{'Authorization':'Bearer '+C.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(opts.headers||{})}});
+  if(r.status===404) return null;
+  if(!r.ok){ const t=await r.text(); throw new Error(`GitHub ${r.status}: ${t.slice(0,200)}`); }
+  return r.json();
+}
+async function lerJson(path){ const r=await gh(path); if(!r) return null; return {json: JSON.parse(b64dec(r.content)), sha: r.sha}; }
+async function gravar(path, obj, sha, msg){
+  const body={message:msg, content:b64enc(JSON.stringify(obj,null,2)), branch:C.branch}; if(sha) body.sha=sha;
+  const r=await gh(path,{method:'PUT',body:JSON.stringify(body)}); return r.content.sha;
+}
+const rawUrl = p => `https://raw.githubusercontent.com/${C.owner}/${C.repo}/${C.branch}/${p}`;
+
+// ================== conexão ==================
+function abrirConfig(){ $('telaConexao').classList.remove('hide'); if(C){ $('cOwner').value=C.owner; $('cRepo').value=C.repo; $('cBranch').value=C.branch; $('cPasta').value=C.pasta; $('cToken').value=C.token; } }
+async function salvarConexao(){
+  C={owner:$('cOwner').value.trim(), repo:$('cRepo').value.trim(), branch:$('cBranch').value.trim()||'main', pasta:$('cPasta').value.trim().replace(/^\/|\/$/g,'')||'dados', token:$('cToken').value.trim()};
+  localStorage.setItem('mtv_conexao', JSON.stringify(C));
+  await iniciar();
+}
+async function iniciar(){
+  if(!C){ abrirConfig(); return; }
+  try{
+    toast('Carregando…');
+    const c=await lerJson(`${C.pasta}/config.json`);
+    CONFIG = c ? c.json : {app_nome:'Minha TV', usuarios:{}}; CONFIG_SHA = c ? c.sha : null;
+    CONFIG.usuarios = CONFIG.usuarios || {};
+    await carregarListas();
+    $('telaConexao').classList.add('hide'); $('app').classList.remove('hide');
+    $('nomeApp').textContent = CONFIG.app_nome || 'Minha TV';
+    desenharUsuarios(); preencherApp();
+    toast('Conectado ✔');
+  }catch(e){ toast('Erro: '+e.message, 6000); abrirConfig(); }
+}
+async function carregarListas(){
+  const r = await gh(`${C.pasta}/listas`);
+  LISTAS = (r||[]).filter(f=>f.type==='file' && /\.(json|m3u8?)$/i.test(f.name)).map(f=>({nome:f.name, path:f.path, sha:f.sha}));
+  const opts = LISTAS.map(l=>`<option value="${esc(rawUrl(l.path))}">${esc(l.nome)}</option>`).join('');
+  $('nLista').innerHTML = opts + '<option value="__outra">Outro link…</option>';
+  $('selLista').innerHTML = '<option value="">— escolha uma lista —</option>' + LISTAS.filter(l=>l.nome.endsWith('.json')).map(l=>`<option value="${esc(l.path)}">${esc(l.nome)}</option>`).join('');
+}
+
+// ================== acessos ==================
+function gerarCodigo(){ const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=a[Math.floor(Math.random()*a.length)]; return CONFIG.usuarios[s] ? gerarCodigo() : s; }
+function isoLocal(d){ const p=n=>String(n).padStart(2,'0'); const o=-d.getTimezoneOffset(); const sg=o>=0?'+':'-'; const oa=Math.abs(o);
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:00${sg}${p(Math.floor(oa/60))}:${p(oa%60)}`; }
+function paraInput(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
+function somar(base, dur){ const d=new Date(Math.max(Date.now(), base? new Date(base).getTime()||0 : 0)); const n=parseInt(dur); if(dur.endsWith('h')) d.setHours(d.getHours()+n); else d.setDate(d.getDate()+n); return isoLocal(d); }
+function fmt(iso){ if(!iso) return 'sem prazo'; const d=new Date(iso); return isNaN(d)? iso : d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function status(u){ if(u.ativo===false) return ['Bloqueado','bad']; if(!u.expira) return ['Sem prazo','ok']; const t=new Date(u.expira).getTime()-Date.now();
+  if(isNaN(t)) return ['Data inválida','bad']; if(t<=0) return ['Expirado','bad'];
+  const min=Math.round(t/60e3); if(t<6*3600e3) return ['Acaba em '+(min>=60? Math.round(min/60)+' h' : min+' min'),'warn'];
+  return ['Ativo','ok']; }
+function nomeDaLista(url){ const l=LISTAS.find(l=>rawUrl(l.path)===url); return l? l.nome : (url||'—'); }
+
+function gerarTeste(){
+  let lista=$('nLista').value;
+  if(lista==='__outra'){ lista=prompt('Cole o link da lista (JSON ou M3U):'); if(!lista) return; }
+  const cod=gerarCodigo(); const dur=$('nDur').value;
+  CONFIG.usuarios[cod]={nome:$('nNome').value.trim(), expira: dur==='0' ? '' : somar(null,dur), lista, ativo:true};
+  $('nNome').value=''; desenharUsuarios();
+  salvarConfig().then(()=>copiarMsg(cod));
+}
+function desenharUsuarios(){
+  const q=($('busca').value||'').toLowerCase();
+  const ents=Object.entries(CONFIG.usuarios).filter(([k,u])=>!q || k.toLowerCase().includes(q) || (u.nome||'').toLowerCase().includes(q))
+    .sort((a,b)=>(new Date(b[1].expira||'2999').getTime())-(new Date(a[1].expira||'2999').getTime()));
+  const opcoesLista = sel => LISTAS.map(l=>{const u=rawUrl(l.path); return `<option value="${esc(u)}" ${u===sel?'selected':''}>${esc(l.nome)}</option>`}).join('')
+     + (LISTAS.some(l=>rawUrl(l.path)===sel)?'':`<option value="${esc(sel)}" selected>${esc(sel||'—')}</option>`);
+  $('listaUsuarios').innerHTML = ents.length ? ents.map(([k,u])=>{ const [st,cl]=status(u); return `
+    <div class="card user">
+      <div class="top"><span class="code">${esc(k)}</span><span class="pill ${cl}">${st}</span><span class="grow"></span>
+        <button class="mini" onclick="copiarMsg('${esc(k)}')">📋 Mensagem</button></div>
+      <div class="grid2">
+        <div><label>Nome</label><input value="${esc(u.nome)}" onchange="CONFIG.usuarios['${esc(k)}'].nome=this.value"></div>
+        <div><label>Expira em (${esc(fmt(u.expira))})</label><input type="datetime-local" value="${paraInput(u.expira)}" onchange="CONFIG.usuarios['${esc(k)}'].expira=this.value?isoLocal(new Date(this.value)):'';desenharUsuarios()"></div>
+      </div>
+      <label>Lista</label><select onchange="CONFIG.usuarios['${esc(k)}'].lista=this.value">${opcoesLista(u.lista)}</select>
+      <div class="row" style="margin-top:8px">
+        <button class="mini" onclick="estender('${esc(k)}','4h')">+4h</button>
+        <button class="mini" onclick="estender('${esc(k)}','24h')">+1 dia</button>
+        <button class="mini" onclick="estender('${esc(k)}','30d')">+30 dias</button>
+        <button class="mini" onclick="alternar('${esc(k)}')">${u.ativo===false?'✅ Liberar':'⛔ Bloquear'}</button>
+        <button class="mini" onclick="excluir('${esc(k)}')">🗑️</button>
+      </div>
+    </div>`}).join('') : '<p class="muted">Nenhum acesso ainda. Gere o primeiro teste acima.</p>';
+}
+function estender(k,d){ const u=CONFIG.usuarios[k]; u.expira=somar(u.expira,d); u.ativo=true; desenharUsuarios(); toast('Prazo estendido — toque em Salvar'); }
+function alternar(k){ const u=CONFIG.usuarios[k]; u.ativo = u.ativo===false; desenharUsuarios(); }
+function excluir(k){ if(confirm('Excluir o acesso '+k+'? O app da pessoa vai mostrar "acesso terminou".')){ delete CONFIG.usuarios[k]; desenharUsuarios(); } }
+function copiarMsg(k){ const u=CONFIG.usuarios[k]; const t=`Olá${u.nome?' '+u.nome:''}! Seu acesso ao ${CONFIG.app_nome||'app'} está liberado.\nCódigo: ${k}\nVálido até: ${fmt(u.expira)}`;
+  (navigator.clipboard? navigator.clipboard.writeText(t) : Promise.reject()).then(()=>toast('Mensagem copiada ✔')).catch(()=>prompt('Copie a mensagem:',t)); }
+async function salvarConfig(){
+  try{ CONFIG_SHA = await gravar(`${C.pasta}/config.json`, CONFIG, CONFIG_SHA, 'Atualiza acessos'); toast('Acessos salvos ✔'); }
+  catch(e){ toast('Erro ao salvar: '+e.message, 6000); if(String(e.message).includes('409')) toast('O arquivo mudou em outro lugar. Recarregue a página.',6000); }
+}
+
+// ================== app ==================
+function preencherApp(){ $('aNome').value=CONFIG.app_nome||''; $('aMsg').value=CONFIG.mensagem||''; $('aContato').value=CONFIG.contato||''; $('aExp').value=CONFIG.mensagem_expirado||''; }
+async function salvarApp(){ CONFIG.app_nome=$('aNome').value.trim()||'Minha TV'; CONFIG.mensagem=$('aMsg').value.trim(); CONFIG.contato=$('aContato').value.replace(/\D/g,''); CONFIG.mensagem_expirado=$('aExp').value.trim(); $('nomeApp').textContent=CONFIG.app_nome; await salvarConfig(); }
+
+// ================== listas ==================
+function aba(x){ for(const k of ['U','L','A']){ $('sec'+k).classList.toggle('hide',k!==x); $('tab'+k).classList.toggle('sel',k===x);} }
+function subaba(x){ for(const k of ['C','F','S']){ $('sub'+k).classList.toggle('hide',k!==x); $('st'+k).classList.toggle('sel',k===x);} }
+const slug = s => (s||'item').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) || 'item';
+const novoId = (p,t) => `${p}-${slug(t)}-${Math.random().toString(36).slice(2,6)}`;
+
+async function abrirLista(path){
+  if(!path){ $('editorLista').classList.add('hide'); return; }
+  try{ const r=await lerJson(path); L=r.json; L_SHA=r.sha; L_PATH=path;
+    L.canais=L.canais||[]; L.filmes=L.filmes||[]; L.series=L.series||[];
+    $('lNome').value=L.nome||''; $('editorLista').classList.remove('hide'); desenharLista(); }
+  catch(e){ toast('Erro: '+e.message,6000); }
+}
+function novaLista(){
+  let n=prompt('Nome do arquivo da nova lista (ex.: teste2):'); if(!n) return; n=slug(n)+'.json';
+  L={nome:n.replace('.json',''), versao:0, canais:[], filmes:[], series:[]}; L_SHA=null; L_PATH=`${C.pasta}/listas/${n}`;
+  $('lNome').value=L.nome; $('editorLista').classList.remove('hide'); desenharLista(); toast('Lista criada — adicione itens e salve');
+}
+function duplicarLista(){
+  if(!L){ toast('Abra uma lista primeiro'); return; }
+  let n=prompt('Nome do arquivo da cópia (ex.: teste3):'); if(!n) return; n=slug(n)+'.json';
+  L=JSON.parse(JSON.stringify(L)); L.nome=n.replace('.json',''); L.versao=0; L_SHA=null; L_PATH=`${C.pasta}/listas/${n}`;
+  $('lNome').value=L.nome; desenharLista(); toast('Cópia criada — toque em Salvar lista');
+}
+async function salvarLista(){
+  try{ L.versao=(L.versao||0)+1; L_SHA=await gravar(L_PATH, L, L_SHA, 'Atualiza lista '+L.nome); toast('Lista salva ✔ (versão '+L.versao+')');
+    const atual=L_PATH; await carregarListas(); $('selLista').value=atual; desenharLista(); }
+  catch(e){ L.versao--; toast('Erro ao salvar: '+e.message,6000); }
+}
+function campo(rot, obj, chave, extra=''){ return `<div><label>${rot}</label><input value="${esc(obj[chave])}" ${extra} data-k="${chave}"></div>`; }
+// liga inputs a objetos via caminho
+function ligar(container, obj){ container.querySelectorAll(':scope > .campos input, :scope > .campos textarea').forEach(i=>{ i.oninput=()=>{ const k=i.dataset.k; obj[k] = i.type==='number' ? (i.value? Number(i.value): null) : i.value; }; }); }
+
+function desenharLista(){
+  $('lInfo').textContent = `${L.canais.length} canais · ${L.filmes.length} filmes · ${L.series.length} séries · versão ${L.versao||0} · link: ${rawUrl(L_PATH)}`;
+  // ---- canais
+  const sc=$('subC'); sc.innerHTML = `
+    <div class="row" style="margin:10px 0"><button class="mini" onclick="addCanal()">➕ Canal</button>
+      <button class="mini" onclick="importarM3U()">📥 Importar M3U</button><button class="mini" onclick="if(confirm('Remover todos os canais?')){L.canais=[];desenharLista()}">🗑️ Limpar</button></div>
+    <div id="cl"></div>`;
+  L.canais.forEach((c,i)=>{ const d=document.createElement('div'); d.className='item'; d.innerHTML=`
+    <details><summary class="head">${c.logo?`<img src="${esc(c.logo)}">`:''}<b class="grow">${esc(c.nome)}</b><span class="muted">${esc(c.categoria||'')}</span></summary>
+    <div class="campos grid2">${campo('Nome',c,'nome')}${campo('Categoria',c,'categoria')}${campo('Logo (link da imagem)',c,'logo')}${campo('Link do vídeo (m3u8/mp4)',c,'url')}</div>
+    <div class="row" style="margin-top:8px"><button class="mini" onclick="mover(L.canais,${i},-1)">↑</button><button class="mini" onclick="mover(L.canais,${i},1)">↓</button>
+      <button class="mini" onclick="L.canais.splice(${i},1);desenharLista()">🗑️ Remover</button></div></details>`;
+    $('cl').appendChild(d); ligar(d.querySelector('details'), c); });
+  // ---- filmes
+  const sf=$('subF'); sf.innerHTML = `<div class="row" style="margin:10px 0"><button class="mini" onclick="addFilme()">➕ Filme</button></div><div id="fl"></div>`;
+  L.filmes.forEach((f,i)=>{ const d=document.createElement('div'); d.className='item'; d.innerHTML=`
+    <details><summary class="head">${f.capa?`<img src="${esc(f.capa)}">`:''}<b class="grow">${esc(f.titulo)}</b><span class="muted">${esc(f.ano||'')}</span></summary>
+    <div class="campos grid2">${campo('Título',f,'titulo')}${campo('Ano',f,'ano','type="number"')}${campo('Gênero',f,'genero')}${campo('Duração',f,'duracao','placeholder="1h 45min"')}
+      ${campo('Capa (vertical)',f,'capa')}${campo('Fundo (horizontal)',f,'fundo')}${campo('Link do vídeo',f,'url')}
+      <div><label>Sinopse</label><textarea data-k="sinopse">${esc(f.sinopse)}</textarea></div></div>
+    <div class="row" style="margin-top:8px"><button class="mini" onclick="mover(L.filmes,${i},-1)">↑</button><button class="mini" onclick="mover(L.filmes,${i},1)">↓</button>
+      <button class="mini" onclick="L.filmes.splice(${i},1);desenharLista()">🗑️ Remover</button></div></details>`;
+    $('fl').appendChild(d); ligar(d.querySelector('details'), f); });
+  // ---- séries
+  const ss=$('subS'); ss.innerHTML = `<div class="row" style="margin:10px 0"><button class="mini" onclick="addSerie()">➕ Série</button></div><div id="sl"></div>`;
+  L.series.forEach((s,i)=>{ s.temporadas=s.temporadas||[]; const d=document.createElement('div'); d.className='item';
+    const neps=s.temporadas.reduce((a,t)=>a+(t.episodios||[]).length,0);
+    d.innerHTML=`<details ${s._aberta?'open':''}><summary class="head">${s.capa?`<img src="${esc(s.capa)}">`:''}<b class="grow">${esc(s.titulo)}</b><span class="muted">${s.temporadas.length} temp · ${neps} ep</span></summary>
+    <div class="campos grid2">${campo('Título',s,'titulo')}${campo('Ano',s,'ano','type="number"')}${campo('Gênero',s,'genero')}${campo('Capa (vertical)',s,'capa')}${campo('Fundo (horizontal)',s,'fundo')}
+      <div><label>Sinopse</label><textarea data-k="sinopse">${esc(s.sinopse)}</textarea></div></div>
+    <div class="temps"></div>
+    <div class="row" style="margin-top:8px"><button class="mini" onclick="addTemporada(${i})">➕ Temporada</button>
+      <button class="mini" onclick="L.series.splice(${i},1);desenharLista()">🗑️ Remover série</button></div></details>`;
+    $('sl').appendChild(d); const det=d.querySelector('details'); ligar(det, s); det.ontoggle=()=>{ s._aberta=det.open; };
+    const tc=d.querySelector('.temps');
+    s.temporadas.forEach((t,ti)=>{ t.episodios=t.episodios||[]; const td=document.createElement('div'); td.className='card'; td.style.margin='10px 0';
+      td.innerHTML=`<div class="row"><b class="grow">Temporada ${esc(t.numero)}</b>
+        <button class="mini" onclick="colarEps(${i},${ti})">📥 Colar links</button><button class="mini" onclick="addEp(${i},${ti})">➕ Episódio</button>
+        <button class="mini" onclick="L.series[${i}].temporadas.splice(${ti},1);desenharLista()">🗑️</button></div><div class="eps"></div>`;
+      tc.appendChild(td);
+      t.episodios.forEach((e,ei)=>{ const ed=document.createElement('div'); ed.className='item'; ed.style.background='#14141f';
+        ed.innerHTML=`<div class="campos grid2">${campo('Nº',e,'numero','type="number"')}${campo('Título',e,'titulo')}${campo('Link do vídeo',e,'url')}${campo('Duração',e,'duracao')}${campo('Imagem (opcional)',e,'capa')}</div>
+          <div class="row" style="margin-top:6px"><button class="mini" onclick="L.series[${i}].temporadas[${ti}].episodios.splice(${ei},1);desenharLista()">🗑️ Remover</button></div>`;
+        td.querySelector('.eps').appendChild(ed);
+        ed.querySelectorAll('input').forEach(inp=>{ inp.oninput=()=>{ const k=inp.dataset.k; e[k]= inp.type==='number' ? Number(inp.value||0) : inp.value; }; });
+      });
+    });
+  });
+}
+function mover(arr,i,d){ const j=i+d; if(j<0||j>=arr.length) return; [arr[i],arr[j]]=[arr[j],arr[i]]; desenharLista(); }
+function addCanal(){ const n=prompt('Nome do canal:'); if(!n) return; L.canais.push({id:novoId('c',n), nome:n, categoria:'Geral', logo:'', url:''}); desenharLista(); toast('Canal adicionado — preencha o link'); }
+function addFilme(){ const n=prompt('Título do filme:'); if(!n) return; L.filmes.unshift({id:novoId('f',n), titulo:n, ano:null, genero:'', duracao:'', capa:'', fundo:'', sinopse:'', url:''}); desenharLista(); subaba('F'); }
+function addSerie(){ const n=prompt('Título da série:'); if(!n) return; L.series.unshift({id:novoId('s',n), titulo:n, genero:'', capa:'', fundo:'', sinopse:'', temporadas:[{numero:1, episodios:[]}], _aberta:true}); desenharLista(); subaba('S'); }
+function addTemporada(i){ const s=L.series[i]; const n=(s.temporadas.reduce((m,t)=>Math.max(m,t.numero||0),0))+1; s.temporadas.push({numero:n, episodios:[]}); s._aberta=true; desenharLista(); }
+function addEp(i,ti){ const s=L.series[i], t=s.temporadas[ti]; const n=(t.episodios.reduce((m,e)=>Math.max(m,e.numero||0),0))+1;
+  t.episodios.push({id:`${s.id}-t${t.numero}e${n}-${Math.random().toString(36).slice(2,5)}`, numero:n, titulo:'', url:'', duracao:''}); s._aberta=true; desenharLista(); }
+function colarEps(i,ti){ const txt=prompt('Cole os links dos episódios, um por linha (na ordem):'); if(!txt) return; const s=L.series[i], t=s.temporadas[ti];
+  let n=(t.episodios.reduce((m,e)=>Math.max(m,e.numero||0),0));
+  txt.split(/\s+/).map(x=>x.trim()).filter(x=>/^https?:\/\//.test(x)).forEach(u=>{ n++; t.episodios.push({id:`${s.id}-t${t.numero}e${n}-${Math.random().toString(36).slice(2,5)}`, numero:n, titulo:'', url:u}); });
+  s._aberta=true; desenharLista(); }
+function importarM3U(){
+  const txt=prompt('Cole aqui o conteúdo da lista M3U (#EXTM3U ...):'); if(!txt) return;
+  const linhas=txt.split(/\r?\n/); let cur=null, n=0;
+  for(const raw of linhas){ const l=raw.trim();
+    if(/^#EXTINF/i.test(l)){ const at={}; l.replace(/([\w-]+)="([^"]*)"/g,(m,k,v)=>at[k.toLowerCase()]=v); const ia=l.lastIndexOf('"'); const iv=l.indexOf(',',Math.max(ia,0));
+      cur={nome:(iv>=0?l.slice(iv+1).trim():'')||at['tvg-name']||'Canal', logo:at['tvg-logo']||'', categoria:at['group-title']||'Geral'}; }
+    else if(l && !l.startsWith('#') && cur){ L.canais.push({id:novoId('c',cur.nome), ...cur, url:l}); cur=null; n++; } }
+  desenharLista(); toast(n+' canais importados');
+}
+// remove campos internos antes de salvar
+const _gravar=gravar; gravar=async(path,obj,sha,msg)=>_gravar(path, JSON.parse(JSON.stringify(obj,(k,v)=>k==='_aberta'?undefined:v)), sha, msg);
+
+iniciar();
+</script>
+</body>
+</html>

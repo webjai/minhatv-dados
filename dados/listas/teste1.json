@@ -1,0 +1,144 @@
+{
+  "nome": "Lista de teste",
+  "versao": 1,
+  "canais": [
+    {
+      "id": "canal-teste-1",
+      "nome": "Canal Teste Ao Vivo",
+      "categoria": "Testes",
+      "logo": "",
+      "url": "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8"
+    },
+    {
+      "id": "canal-teste-2",
+      "nome": "Canal Demonstração HD",
+      "categoria": "Testes",
+      "logo": "",
+      "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    },
+    {
+      "id": "canal-teste-3",
+      "nome": "Canal Apple Bipbop",
+      "categoria": "Demonstração",
+      "logo": "",
+      "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"
+    }
+  ],
+  "filmes": [
+    {
+      "id": "big-buck-bunny",
+      "titulo": "Big Buck Bunny",
+      "ano": 2008,
+      "genero": "Animação",
+      "duracao": "10 min",
+      "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
+      "fundo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
+      "sinopse": "Um coelho gigante e gentil decide dar o troco em três roedores que vivem aprontando. Curta aberto da Blender Foundation.",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    },
+    {
+      "id": "sintel",
+      "titulo": "Sintel",
+      "ano": 2010,
+      "genero": "Animação",
+      "duracao": "15 min",
+      "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
+      "fundo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
+      "sinopse": "Uma jovem atravessa terras perigosas à procura de seu dragão perdido. Curta aberto da Blender Foundation.",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+    },
+    {
+      "id": "tears-of-steel",
+      "titulo": "Tears of Steel",
+      "ano": 2012,
+      "genero": "Ficção científica",
+      "duracao": "12 min",
+      "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
+      "fundo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
+      "sinopse": "Em Amsterdã, um grupo de cientistas tenta salvar o mundo de robôs. Curta aberto da Blender Foundation.",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+    },
+    {
+      "id": "elephants-dream",
+      "titulo": "Elephants Dream",
+      "ano": 2006,
+      "genero": "Ficção científica",
+      "duracao": "11 min",
+      "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+      "fundo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+      "sinopse": "Dois personagens exploram uma máquina estranha e infinita. Primeiro filme aberto da Blender Foundation.",
+      "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+    }
+  ],
+  "series": [
+    {
+      "id": "serie-demonstracao",
+      "titulo": "Série Demonstração",
+      "ano": 2024,
+      "genero": "Variedades",
+      "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
+      "fundo": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
+      "sinopse": "Série de exemplo para testar episódios, temporadas, continuar assistindo e próximo episódio automático.",
+      "temporadas": [
+        {
+          "numero": 1,
+          "episodios": [
+            {
+              "id": "demo-t1e1",
+              "numero": 1,
+              "titulo": "Fogo",
+              "duracao": "1 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            },
+            {
+              "id": "demo-t1e2",
+              "numero": 2,
+              "titulo": "Fuga",
+              "duracao": "1 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+            },
+            {
+              "id": "demo-t1e3",
+              "numero": 3,
+              "titulo": "Diversão",
+              "duracao": "1 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+            },
+            {
+              "id": "demo-t1e4",
+              "numero": 4,
+              "titulo": "Passeio",
+              "duracao": "1 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerJoyrides.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "episodios": [
+            {
+              "id": "demo-t2e1",
+              "numero": 1,
+              "titulo": "Na estrada",
+              "duracao": "10 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/WeAreGoingOnBullrun.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"
+            },
+            {
+              "id": "demo-t2e2",
+              "numero": 2,
+              "titulo": "Carro barato",
+              "duracao": "9 min",
+              "capa": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/WhatCarCanYouGetForAGrand.jpg",
+              "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
