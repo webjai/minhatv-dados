@@ -6,7 +6,7 @@
   "usuarios": {
     "M65B2L": {
       "nome": "Vitor",
-      "expira": "",
+      "expira": "2027-03-31T13:09:00-03:00",
       "lista": "http://auratvlobo.com/get.php?username=6386779492&password=3581881984&type=m3u_plus&output=ts",
       "ativo": true
     }
