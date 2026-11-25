@@ -4,10 +4,10 @@
   "mensagem_expirado": "Seu teste acabou! Chame no WhatsApp para liberar mais tempo. Seu histórico continua salvo.",
   "contato": "5511999999999",
   "usuarios": {
-    "N3UA3U": {
-      "nome": "Vitinho Viola🎸",
-      "expira": "2027-03-25T23:58:00-03:00",
-      "lista": "http://auratvlobo.com/get.php?username=6386779492&password=3581881984&type=m3u_plus&output=ts",
+    "M65B2L": {
+      "nome": "Vitor",
+      "expira": "",
+      "lista": "https://raw.githubusercontent.com/webjai/minhatv-dados/main/dados/listas/teste1.json",
       "ativo": true
     }
   }
